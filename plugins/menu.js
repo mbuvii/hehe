@@ -51,7 +51,7 @@ ${menu.search}
   
  POWERED BY MBUVI TECH 
 '
-await conn.sendMessage(from,{text:madeMenu},{quoted:mek})
+await conn.sendMessage(from,{image:{url:"https://telegra.ph/file/a7ca8d4777fa8ad977795.jpg"},caption:madeMenu},{quoted:mek})
   
 }catch(e){
 console.log(e)
