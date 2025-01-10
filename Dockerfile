@@ -1,24 +1,20 @@
-FROM node:lts-buster
+# Use the official Node.js image as a base
+FROM node:14
 
-RUN apt-get update && \
-  apt-get install -y \
-  ffmpeg \
-  imagemagick \
-  webp && \
-  apt-get upgrade -y && \
-  npm i pm2 -g && \
-  rm -rf /var/lib/apt/lists/*
+# Set the working directory
+WORKDIR /app
 
-RUN git clone https://github.com/cheekydavy/savage.git  /root/savage
-WORKDIR /root/savage/
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
+# Install dependencies
+RUN npm install --production
 
-COPY package.json .
-RUN npm install pm2 -g
-RUN npm install --legacy-peer-deps
-
+# Copy the rest of your application code
 COPY . .
 
-EXPOSE 5000
+# Expose the port your app runs on
+EXPOSE 8000
 
+# Command to run your app
 CMD ["node", "index.js"]
