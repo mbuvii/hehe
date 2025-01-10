@@ -11,6 +11,10 @@ const fs = require('fs');
 const P = require('pino');
 const config = require('./config');
 const express = require('express');
+const qrcode = require('qrcode-terminal');
+const util = require('util');
+const { sms, downloadMediaMessage } = require('./lib/msg');
+const axios = require('axios');
 const { File } = require('megajs');
 
 const ownerNumber = ['254746440595']; // Update to your owner's numbers
@@ -43,14 +47,14 @@ async function connectToWA() {
 
     console.log("Connecting SAVAGE MD 🧬...");
     
-    // Setup the auth state without printing QR code
+    // Setup the auth state
     const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/auth_info_baileys/');
     const { version } = await fetchLatestBaileysVersion();
 
     // Create a new WA socket instance
     const conn = makeWASocket({
         logger: P({ level: 'silent' }),
-        printQRInTerminal: false, // Disable QR code printing
+        printQRInTerminal: true,
         browser: Browsers.macOS("Chrome"),
         syncFullHistory: true,
         auth: state,
