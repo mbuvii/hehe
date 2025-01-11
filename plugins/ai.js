@@ -1,19 +1,17 @@
-const config = require('../config')
-const {cmd , commands} = require('../command')
-const {fetchJson} = require('../lib/functions')
+const { cmd } = require('../lib/command');
+const fetchJson = require('../lib/functions').fetchJson;
 
 cmd({
     pattern: "aai",
-    desc: "ai chat",
+    desc: "AI chat",
     category: "main",
     filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-let data = await fetchJson('https://chatgptforprabath-md.vercel.app/api/gptv1?q=${q}')
-return reply('${data.data}')
-}catch(e){
-  console.log(e)
-  reply('${e}')
-}
-})
+}, async (conn, mek, { body }) => {
+    try {
+        const data = await fetchJson(`https://chatgptforprabath-md.vercel.app/api/gptv1?q=${body}`);
+        await conn.sendMessage(mek.key.remoteJid, { text: data.data }, { quoted: mek });
+    } catch (e) {
+        console.error(e);
+        await conn.sendMessage(mek.key.remoteJid, { text: 'An error occurred.' }, { quoted: mek });
+    }
+});
