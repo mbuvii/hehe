@@ -1,17 +1,21 @@
-const {readEnv} = require('../lib/database') 
-const {cmd , commands} = require('../command')
+const { cmd } = require('../lib/command');
+const { readEnv } = require('../lib/database');
+
 cmd({
     pattern: "alive",
-    desc: "Check bot online or no.",
+    desc: "Check if bot is online",
     category: "main",
     filename: __filename
-},
-async(conn, mek, m,{from, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-const config= await readEnv();
-return await conn.sendMessage(from,{image: {url: config.ALIVE_IMG},caption: config.ALIVE_MSG},{quoted: mek})
-}catch(e){
-console.log(e)
-reply(`${e}`)
-}
-})
+}, async (conn, mek) => {
+    try {
+        const config = await readEnv();
+        const aliveMessage = {
+            image: { url: config.ALIVE_IMG },
+            caption: config.ALIVE_MSG,
+        };
+        await conn.sendMessage(mek.key.remoteJid, aliveMessage, { quoted: mek });
+    } catch (e) {
+        console.error(e);
+        await conn.sendMessage(mek.key.remoteJid, { text: 'An error occurred.' }, { quoted: mek });
+    }
+});
